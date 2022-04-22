@@ -1,0 +1,194 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fullpage}
+%\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{hyperref}
+%\usepackage[]{algorithm2e}
+
+
+\newcommand{\abs}[1]{{\lvert #1\rvert}}
+\newenvironment{solution}{\textbf{Solution:}}{\hfill$\square$}
+
+%\newcommand{\pr}{\textsc{P}}
+
+\begin{document}
+
+\begin{center}
+    \huge{CS203A: Assignment 2 (Spring 2022)}
+\end{center}
+
+\textbf{Submission Deadline:} 22 April 2022 23:59 IST.\hfill Total Marks:100\\
+
+\textbf{Author:}
+\begin{itemize}
+    Name: \textbf{Harshit Raj} \hfill
+    Roll: \textbf{200433} \hfill 
+    Email: \textbf{harshitr20@iitk.ac.in}
+\end{itemize}
+
+\hrule
+\hrule
+\begin{enumerate}
+
+\item (15+15 marks) \textbf{Endsem allocation}
+
+You are allocated as the Tutor of CS203, with $n$ students. Rajat has created 2 sets of Endsem papers to decrease cheating. He has asked you to help decide which paper should be given to whom. You scraped through the data on Hello, and found out who have been project partners in previous courses, as they will be friends now. Thus, you have found out $m$ friendship connections among the students. You reported this to Rajat, and he said he is fine with any allocation that disrupts atleast half of the friendship connections. A friendship connection is disrupted if the students get different sets of papers.
+
+\begin{enumerate}
+
+\item You are really busy, and just randomly allocated each student to set 1 or set 2. Show that the expected value of disrupted friendship connections is $\frac{m}{2}$.
+
+\item Getting expected value is not enough, you need to find a proper allocation. But you cannot go over all the $2^n$ allocations as $n\approx 150$. Using the construction for pairwise independence given in class, show that you can find an allocation with at least half of the friendship connections disrupted in poly$(n)$-time.
+
+\end{enumerate}
+
+\begin{solution}
+\begin{enumerate}
+\item We know that students have been allocated randomly. \\
+Say, $P_{i}(x)$ is probability of $i^{th}$ student getting set $x$. Where $x$ is either $1$ or $2$. \\
+Clearly, 
+$$P_{i}(1) = \frac{1}{2} \text{ and } P_{i}(2) = \frac{1}{2} \text{  } \forall i \in \{1, ..., n\} $$
+For each connection $C_{t}$ of Student $S_{i}$ and Student $S_{j}$. Say probability of Connection $t$ being disrupted is $PC(t)$. \\
+For any general $C_{t}$, 
+$$PC(t) = P(\text{Both student have set 1})+P(\text{Both student have set 2})$$
+$$\implies PC(t) = P_{i}(1) \times P_{j}(1) + P_{i}(2) \times P_{j}(2)$$
+$$PC(t) = \frac{1}{2} \cdot \frac{1}{2} + \frac{1}{2} \cdot \frac{1}{2} $$
+$$PC(t) = \frac{1}{2}$$
+Any general connection $C_{t}$ is disrupted with a probability $\frac{1}{2}$. \par
+Say $E[A]$ is expected value of disrupted friendship connections,
+$$E[A] = \sum_{i=1}^{i \leq m} PC(i) \cdot 1$$
+$$\implies E[A] = \sum_{i=1}^{i \leq m} \frac{1}{2}$$
+$$\implies E[A] = \frac{m}{2}$$
+\item Since the expected value is $m/2$ there will surely be some combinations greater who have more connections disrupts than expectation. We can put first try to make pools of students and make pools like no inter-pool connections exist to ease our computation.
+\par Every discussion and computation will happen for individual pools. Randomly assign opposite set to a pair. Now, either all students have set or students there's some connection to some student who already assign set opposite to the connection having set. \\
+eg. $S1$ and $S2$ have a connection, both have set 1 and 2 respectively. Now there must exist students connected with these two and assign them set opposite to their connection. Hit and trial with this method.
+\end{enumerate}
+\end{solution}
+\vspace{.1in}
+\item (5+10+10+15 marks) \textbf{Estimating the number of tickets}
+
+You are given a bag full of $N$ tickets numbered $1,\ldots,N$($N$ is unknown to you). You can take out tickets one at a time, note their label, and put them back in the bag. Your task is to estimate $N$. We will do this in the same way as we estimated $\pi$ in lecture:
+
+\begin{enumerate}
+    \item Assume you drew out $k$ tickets. What will be the expected value of the mean of these tickets ? Calculate $N$ in terms of this mean, call this $\tilde{N}$.
+    \item Chernoff bound can be extended to work on the case when the Random Variables take values other than $\{0,1\}$. This is known as \href{https://en.wikipedia.org/wiki/Hoeffding\%27s_inequality}{Hoeffding's inequality}. Use it to find a lower bound on the probability that the error in $N$, using the above calculation, will be less than $\delta N$($\delta<1/2$). (in terms of $N,\delta,k$)
+    \item Assume $k,N$ are odd. In calculation of part (a), instead of using the value of mean, we use the median of the labels of tickets drawn. Prove a lower bound of $1-2e^{-\frac{k(1+2\delta)^2}{2(3-2\delta)}}$ on the probability that the error in $N$ using the median will be less than $\delta N$($\delta<1/2$). (in terms of $N,\delta,k$)
+    \item Start with a random hidden value of $N$ in range $10^4-10^6$. Write a function that gives $k$ values from $[N]$ when queried with equal probability. Use these values to calculate $\tilde{N}$ as in part (a) and (c), and plot them with respect to increasing $k\leq 1000$. Repeat this estimation for a total of 3 different $N$, and put the plots in the main answer file. Submit the code you used to generate these plots, along with a readme on how to execute the code, zipped together with the main answer file into a single .zip file.
+\end{enumerate}
+
+
+\begin{solution}
+\begin{enumerate}
+\item
+There are $N$ cards and probability of drawing $i^{th}$ card is $\frac{1}{N}$. \par
+Say, expected value when a card is drawn is $E[A]$.
+$$E[A] = \sum_{i=1}^{i \leq N} P(i^{th}\text{ card is drawn}) \cdot i$$
+$$\implies E[A] = \sum_{i=1}^{i \leq N} \frac{1}{N} \cdot i$$
+$$\implies E[A] = \frac{1}{N} \cdot \frac{N \cdot (N+1)}{2}$$
+$$\implies E[A] = \frac{N+1}{2}$$
+Expected value of draw in any general draw is $\frac{N+1}{2}$ as many random draws one make more closer the mean value will be to this value. \par
+Say the mean value obtained in $k$ draws is $m$,
+$$m = \frac{\tilde{N}+1}{2}$$
+$$\implies \tilde{N} = 2m -1 $$
+\item
+Define a family of random variable,
+$$X_{i} = 2Q_{i} - 1$$ where $Q_{i}$ is the number observed in $i^{th}$ draw. \par
+Define,
+$$S_{k} = \sum_{i=1}^{i\leq k} X_{i}$$
+Observe, 
+\begin{enumerate}
+    \item Since, family of $Q_{i}$ are mutually independent by nature. Hence, family of $X_{i}$ are also mutually independent.
+    \item $E[S_{k}] = kN$ (from part (a))
+    \item $S_{k} = k\tilde{N}$ (by definition)
+    \item Since, $Q_{i} \in \{1,...,N\}$ \\ Hence, $X_{i} \in \{1,...,2N-1\}$
+\end{enumerate}
+We want to know the lower bound of probability,
+$$P((\text{Error in } N) < \delta N)$$ where $\delta < \tfrac{1}{2}$
+$$\implies P(|\tilde{N} - N| < \delta N)$$ multiplying both side of inequality by $k$
+$$\implies P(|k\tilde{N} - kN| < \delta kN)$$ 
+We can also calculate upper bound of the probability:
+$$P(|k\tilde{N} - kN| \geq \delta kN)$$ 
+the upper bound of above probability is same as 1 - lower bound of first probability. Above can also be written as,
+$$P(|S_{k} - E[S_{k}]| \geq \delta kN)$$ 
+\par
+Using Hoeffding's inequality,
+$$P(|S_{k} - E[S_{k}]| \geq \delta kN) \leq 2exp \Bigg(-\frac{2 (\delta kN)^2}{\sum_{i=1}^{i\leq k}\big((2N -1) -1 \big)^2} \Bigg)$$ 
+$$\implies P(|S_{k} - E[S_{k}]| \geq \delta kN) \leq 2exp \Bigg(-\frac{2 (\delta kN)^2}{k \cdot(2N -2)^2} \Bigg)$$ 
+$$\implies P(|S_{k} - E[S_{k}]| \geq \delta kN) \leq 2exp \Bigg(-\frac{k}{2} \Big(\frac{\delta N}{N -1}\Big)^2 \Bigg)$$ 
+Lower bound on the probability that the error in $N$ will be less than $\delta N$($\delta<1/2$) is $$1- 2exp \Bigg(-\frac{k}{2} \Big(\frac{\delta N}{N -1}\Big)^2 \Bigg)$$ 
+\item Expected value of median draw is $\frac{N+1}{2}$ by uniformity of random variable.
+Say the observed median is $e$.
+$$\tilde{N} = 2e-1$$
+
+% We need,
+% $$2e^{-\frac{k(1+2\delta)^2}{2(3-2\delta)}}$$
+% We got,
+% $$1-2e^{-\frac{k(1+2\delta)^2}{2(3-2\delta)}}$$
+\item images and code attached
+\end{enumerate}
+\end{solution}
+
+\vspace{.1in}
+
+
+
+
+
+\item (15+15 marks) \textbf{Markov Chain}
+
+Consider a homogeneous regular Markov chain with state space $S$ of size $\abs{S}$, and transition matrix $M$. Suppose that $M$ is symmetric and entry-wise positive.
+\begin{enumerate}
+\item Show that all the eigenvalues of $M$ are bounded by $1$ and that the uniform distribution
+is the unique stationary probability distribution for $M$.
+\item Starting from the stationary distribution, express the probability of returning to the same state as the state at $t=0$ after  $n \in \mathbb{N}$ steps in terms of the eigenvalues of $M$. Compute the limit of the above probability as $n \rightarrow \infty$.
+
+
+\end{enumerate}
+
+You might find the second part to be easier than the first. Feel free to assume the first part and finish the second part (even when you can't prove the first part).
+
+\begin{solution}
+\begin{enumerate}
+\item We know(from lecture notes) that $M$ can be represented in form of $\sum \lambda_{i} v_{i}v_{i}^T$ where $\lambda_{i}$ is a eigenvalue and $v_{i}$ is its respective eigenvector. \\
+\par We know that for $\lambda$ to be a eigenvalue of matrix $M$, $det(M-\lambda I) =0$
+\par Put $\lambda =1$. Consider, $det(M-I)$
+\par We also know that all columns of $M$ add up to $1$. Hence, all columns of $M-I$ will add up to $0$.
+\par This implies sum of all row vectors add to $0$ vector. Hence we can say that all rows are linearly dependent. Which implies $det(M-I) = 0$.
+\par Hence, $1$ is an eigenvalue of matrix $M$. \\
+\par Assume we have an eigenvalue greater than 1. Also, $M^p = \sum \lambda_{i}^p v_{i}v_{i}^T$
+\par we know that $M^p$ as $p \rightarrow \infty$ converges. But since, $\exists i$ such that $\lambda_{i} > 1$ the term $\lambda_{i}^p v_{i}v_{i}^T$ will diverge. Hence we have a contradiction and we cannot have any $\lambda_{i} > 1$. \\
+\par Hence we conclude, $\forall i$ $\lambda_{i} \leq 1$ i.e. bounded by 1. \\
+\par Since, Eigenvalues are unique in nature. Stationary distribution is eigenvector related to eigenvalue $1$.
+\item The $m_{ij}$ of matrix $M$ denotes probability of going from state $i$ to state $j$ in one step.
+\\ From Lecture notes,
+\par $(M^n)_{ij}$ denotes probability of going from state $i$ to state $j$ in $n$ step. Also, the stationary distribution for this matrix is going to be unique.
+\par Since, it is probability of returning to the same state as the initial state,  change under observation is from $i$ to $i$.
+\\ Now, the probability that state didn't change will be,
+$$\sum P(X_{n} = i | X_{0} = i)$$
+$$\implies \sum (M^n)_{ii}$$
+the above sum is just sum of diagonals of matrix $M^n$ which is $trace(M^n) = \sum eigenvalue(M^n)$ \\
+Eigenvalues of $M^n$ is $eigenvalue(M)^n$. $\implies eigenvalues(M^n) = \{\lambda_{1}^n, ..., \lambda_{k}^n \}$ \\
+\par
+Probability of returning to the same state as the initial state, say $P_{n}(S)$
+$$P_{n}(S) = \sum \lambda_{i}^n$$
+Where $\lambda_{i}$ is family of eigenvalues of $M$, as defined before. \\
+\par Analysis at infinity,
+$$\lim_{n \to \infty} P_{n}(S) $$
+We know that $\forall i$, $\lambda_{i} \leq 1$ and $\exists i$, such that $\lambda_{i}=1$ \\
+$$\lim_{n \to \infty}\lambda_{i}^n = 
+\begin{cases}
+0 & \lambda_{i} < 1 \\
+1 & \lambda_{i} = 1 \text{ (only one of this type)}
+\end{cases}
+$$
+Now from these results,
+$$\implies \lim_{n \to \infty} P_{n}(S) = \sum \lambda_{i}^n = 1 $$
+With almost surety after enough iteration the chain stops at stationary state. 
+\end{enumerate}
+\end{solution}
+\vspace{.1in}
+\end{enumerate}
+\end{document}
