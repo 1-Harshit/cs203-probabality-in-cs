@@ -18,10 +18,10 @@ def main():
     for k in range(1, 1001):
         sample = random_sample(N, k)
         mean = np.mean(sample)
-        median = np.median(sample)
-        Nmean.append(int(mean*2+1))
+        Nmean.append(int(mean*2-1))
         if (k % 2 == 1):
-            Nmid.append(int(median*2+1))
+            median = np.median(sample)
+            Nmid.append(int(median*2-1))
 
     # Plotting
     plt.plot(range(1, 1001, 2), Nmid, 'r-', label='mean')
