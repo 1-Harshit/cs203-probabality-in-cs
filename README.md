@@ -1,4 +1,6 @@
-# CS203B-Mathematics in Computer Science
+# CS203B-Mathematics in Computer Science III
+
+## Probability in Computer Science
 
 Assignment 2 submission of the semester 2021-22-II semester of CS203B at IIT Kanpur.
 
@@ -24,3 +26,4 @@ python -u 200433_Q3.py
 - Email: harshitr20@iitk.ac.in
 - Roll: 200433
 - Date: 22 April 2022
+- Prof: [Dr. Rajat Mittal](https://www.cse.iitk.ac.in/users/rmittal/)
